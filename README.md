@@ -29,6 +29,66 @@ flowchart LR
     minecraft-client[Minecraft client] <-- $domain:25565 --> mc-router
 ```
 
+## Usage
+
+### Public server
+
+1. Clone this repository.
+2. Create `.env`.
+3. Run `docker compose up -d`.
+
+### Each local server
+
+1. Download from [releases](https://github.com/fatedier/frp/releases).
+2. Extract frpc from a downloaded file.
+3. Create `frpc.ini`
+4. Run `frpc -c frpc.ini`.
+
+## Example
+
+### Structure example
+
+※ The public server address is `203.0.113.0`.
+
+#### Public server
+
+##### .env
+
+```dotenv
+ROUTER_MAPPING=example.com=frp:25566,sub.example.com=frp:25567
+```
+
+※ `frp` is the address that means frps container.
+
+#### Local server 1
+
+##### frpc.ini
+
+```ini
+[common]
+server_addr = 203.0.113.0
+server_port = 7000
+
+[minecraft]
+type = tcp
+local_port = 25565
+remote_port = 25566
+```
+#### Local server 2
+
+##### frpc.ini
+
+```ini
+[common]
+server_addr = 203.0.113.0
+server_port = 7000
+
+[minecraft]
+type = tcp
+local_port = 25565
+remote_port = 25567
+```
+
 ## Environment value
 
 ### `FRP_VERSION`
