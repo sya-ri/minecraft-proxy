@@ -1,0 +1,23 @@
+version: "3"
+services:
+  frp:
+    build:
+      context: "."
+      dockerfile: "docker/frp/Dockerfile"
+      args:
+        - "frp_version=${FRP_VERSION:-0.45.0}"
+    environment:
+      - "FRP_ARGS=${FRP_ARGS}"
+    ports:
+      - "${FRP_PORT:-7000}:7000"
+  router:
+    image: itzg/mc-router
+    depends_on:
+     - frp
+    environment:
+      API_BINDING: ":25564"
+    ports:
+      - "25565:25565"
+      - "127.0.0.1:25564:25564"
+    command:
+      - "--mapping=${ROUTER_MAPPING}"
