@@ -5,7 +5,7 @@ services:
       context: "."
       dockerfile: "docker/frp/Dockerfile"
       args:
-        - "frp_version=${FRP_VERSION:-0.52.3}"
+        - "frp_version=${FRP_VERSION:-0.60.0}"
     environment:
       - "FRP_ARGS=${FRP_ARGS}"
     ports:
