@@ -93,7 +93,7 @@ remote_port = 25567
 
 ### `FRP_VERSION`
 
-Default: [`0.52.3`](https://github.com/fatedier/frp/releases/v0.52.3)
+Default: [`0.60.0`](https://github.com/fatedier/frp/releases/v0.60.0)
 
 frps version to use.
 
