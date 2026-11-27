@@ -1,0 +1,22 @@
+- banner:
+  - heading "Minecraft Proxy" [level=1]
+  - combobox "Relay profile":
+    - option "mc.example.com" [selected]
+    - option "other.example.com"
+  - button "Add relay profile"
+  - button "Settings"
+- main "Relay":
+  - region "Connection":
+    - status: Stopped
+    - heading "mc.example.com" [level=2]
+    - button "Copy address"
+    - term: TCP
+    - definition: /\d+/
+    - term: UDP
+    - definition: /\d+/
+    - term: Expires
+    - definition: —
+  - checkbox "Replace existing DNS records"
+  - text: Replace existing DNS records
+  - button "Start"
+  - button "Stop" [disabled]

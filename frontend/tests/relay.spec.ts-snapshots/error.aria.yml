@@ -1,0 +1,21 @@
+- banner:
+  - heading "Minecraft Proxy" [level=1]
+  - combobox "Relay profile":
+    - option "mc.example.com · Reconnect needed" [selected]
+    - option "other.example.com"
+  - button "Add relay profile"
+  - button "Settings"
+- main "Relay":
+  - region "Connection":
+    - status: Reconnect needed
+    - heading "mc.example.com" [level=2]
+    - button "Copy address"
+    - term: TCP
+    - definition: /\d+/
+    - term: UDP
+    - definition: /\d+/
+    - term: Expires
+    - definition: —
+  - alert: No Minecraft status received.
+  - button "Reconnect"
+  - button "Stop"

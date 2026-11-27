@@ -1,6 +1,6 @@
 # Minecraft Proxy
 
-Minecraft Proxy is a planned desktop app that exposes a local Minecraft Java server through a temporary Google Compute Engine (GCE) relay. Players connect using a domain you manage in Cloudflare. The app and downloads are in development.
+Minecraft Proxy is a desktop app that exposes local Minecraft Java servers through temporary Google Compute Engine (GCE) relays. Each hostname has its own relay. Players connect using a domain you manage in Cloudflare. Set up a relay with the [setup guide](docs/setup.md).
 
 The [v1 branch](https://github.com/sya-ri/minecraft-proxy/tree/v1) contains the Docker Compose setup for routing to multiple Minecraft servers through an existing public server.
 
@@ -14,7 +14,7 @@ The [v1 branch](https://github.com/sya-ri/minecraft-proxy/tree/v1) contains the 
 | [ngrok Hobbyist](https://ngrok.com/docs/gateway/domains/tcp-addresses) | US$10/month on monthly billing | ✓ One reserved TCP address | △ [CNAME with assigned port](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints), or Java SRV | ? | ✗ TCP only |
 | [Playit Free](https://playit.gg/) | Free | ✓ Assigned hostname and port for the lifetime of the tunnel | △ Java SRV workaround | △ Worked on the assigned name. Failed with the custom SRV setup tested | ✓ Standalone UDP tunnels |
 | [Playit Premium](https://playit.gg/support/playit-premium/) | From US$3/month | ✓ Assigned hostname and port | ✓ [External domain registration](https://playit.gg/support/external-domain-cloudflare/) | ? | ✓ Generic TCP+UDP tunnels |
-| Minecraft Proxy (planned) | About US$0.0165 per relay hour in Tokyo | ✓ Stable hostname. IP can change between sessions | ✓ Cloudflare DNS, direct TCP 25565 | ✓ Planned through the custom hostname | ✓ TCP and optional UDP on one relay |
+| Minecraft Proxy | About US$0.0165 per relay hour in Tokyo | ✓ Stable hostname. IP can change between sessions | ✓ Cloudflare DNS, direct TCP 25565 | ✓ Checks the Java status response before publishing DNS | ✓ TCP and optional UDP on one relay |
 
 ngrok's full custom-domain registration starts at US$20/month on Pay-as-you-go. TCP aliases use an assigned TCP address. [ngrok pricing](https://ngrok.com/pricing)
 

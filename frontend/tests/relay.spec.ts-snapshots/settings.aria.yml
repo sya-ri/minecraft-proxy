@@ -1,0 +1,36 @@
+- dialog "Settings":
+  - heading "Settings" [level=2]
+  - button "Close"
+  - group "Address":
+    - text: Address Domain
+    - textbox "Domain":
+      - /placeholder: mc.example.com
+      - text: mc.example.com
+    - text: Cloudflare zone
+    - textbox "Cloudflare zone":
+      - /placeholder: example.com
+      - text: example.com
+    - text: Local TCP port
+    - spinbutton "Local TCP port": /\d+/
+    - text: UDP port
+    - spinbutton "UDP port": /\d+/
+    - text: Duration (hours)
+    - spinbutton "Duration (hours)": "4"
+  - group "Google Cloud":
+    - text: Google Cloud Project ID
+    - textbox "Project ID": test-relay
+    - text: Tokyo zone
+    - combobox "Tokyo zone":
+      - option "asia-northeast1-a" [selected]
+      - option "asia-northeast1-b"
+      - option "asia-northeast1-c"
+    - text: VPC network
+    - textbox "VPC network": default
+    - text: Google OAuth client ID
+    - textbox "Google OAuth client ID": google-desktop-client
+    - text: Cloudflare OAuth client ID
+    - textbox "Cloudflare OAuth client ID": cloudflare-desktop-client
+  - button "Sign in to Google"
+  - button "Sign in to Cloudflare"
+  - status
+  - button "Save"

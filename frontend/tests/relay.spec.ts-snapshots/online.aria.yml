@@ -1,0 +1,21 @@
+- banner:
+  - heading "Minecraft Proxy" [level=1]
+  - combobox "Relay profile":
+    - option "mc.example.com · Online" [selected]
+    - option "other.example.com"
+  - button "Add relay profile"
+  - button "Settings"
+- main "Relay":
+  - region "Connection":
+    - status: Online
+    - heading "mc.example.com" [level=2]
+    - button "Copy address"
+    - term: TCP
+    - definition: /\d+/
+    - term: UDP
+    - definition: /\d+/
+    - term: Expires
+    - definition: /\d+\/\d+\/\d+, 4:\d+ PM/
+  - button "Start" [disabled]
+  - button "Extend 4 h"
+  - button "Stop"
