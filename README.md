@@ -1,27 +1,27 @@
 # Minecraft Proxy v2
 
-手元の Minecraft Java サーバーを、遊ぶときだけ作る Google Compute Engine（GCE）の中継 VM 経由で公開するデスクトップアプリの設計です。接続先には Cloudflare で管理している独自ドメインを使います。v2 の実装と配布は準備中です。
+Minecraft Proxy v2 is a planned desktop app that exposes a local Minecraft Java server through a temporary Google Compute Engine (GCE) relay. Players connect using a domain you manage in Cloudflare. The v2 app and downloads are in development.
 
-常設サーバーで複数の Minecraft サーバーを振り分ける Docker Compose 版は [v1 ブランチ](https://github.com/sya-ri/minecraft-proxy/tree/v1) にあります。
+The [v1 branch](https://github.com/sya-ri/minecraft-proxy/tree/v1) contains the Docker Compose setup for routing to multiple Minecraft servers through an existing public server.
 
-## サービス比較
+## Service comparison
 
-料金は 2026 年 11 月 27 日に確認した米ドルの公開価格です。
+List prices in USD, checked November 27, 2026.
 
-| サービス | 料金 | 固定の接続先と独自ドメイン | Minecraft Java のサーバー一覧 | UDP |
+| Service | Price | Stable address and custom domain | Minecraft Java server-list ping | UDP |
 | --- | --- | --- | --- | --- |
-| [ngrok Free](https://ngrok.com/pricing) | 無料。TCP の利用にカード確認が必要 | TCP のホスト名とポートはランダム。独自ドメインから参照する場合は割り当てが変わるたびに DNS 更新が必要 | TCP 転送。独自ドメインでの一覧ピングは未検証 | [非対応](https://ngrok.com/compare/tailscale) |
-| [ngrok Hobbyist](https://ngrok.com/docs/gateway/domains/tcp-addresses) | 月払い US$10。固定 TCP アドレス1個を含む | 固定のホスト名とポートに [CNAME と公開ポート](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints) を使える。Java では SRV でポート入力を省略できる | TCP 転送。独自ドメインでの一覧ピングは未検証 | 非対応 |
-| [Playit 無料](https://playit.gg/) | 無料 | 同じトンネルを使う間、割り当てられたホスト名とポートを使える。Java では独自ドメインから SRV で接続できる構成もある | 割り当て名で応答。検証した SRV 構成では、独自ドメインでの一覧ピングが切断された | UDP 単独のトンネルは無料 |
-| [Playit Premium](https://playit.gg/support/playit-premium/) | 月額 US$3〜 | [所有する独自ドメインを正式に登録してトンネルへ割り当てられる](https://playit.gg/support/external-domain-cloudflare/) | 正式に登録した独自ドメインでの一覧ピングは未検証 | 汎用 TCP+UDP を1本にまとめられる |
-| Minecraft Proxy v2（設計） | 東京の GCE で4時間あたり約 US$0.07 | 独自ドメインを維持し、起動時に Cloudflare の A レコードを更新。Java は TCP 25565 を使うため SRV は不要 | 独自ドメインで一覧ピングと接続を通す設計 | TCP と UDP を同じ VM で公開 |
+| [ngrok Free](https://ngrok.com/pricing) | Free. TCP endpoints require card verification | Random TCP hostname and port. A DNS alias needs updating when the assignment changes | Raw TCP forwarding. A custom-domain ping was not tested | [Unavailable](https://ngrok.com/compare/tailscale) |
+| [ngrok Hobbyist](https://ngrok.com/docs/gateway/domains/tcp-addresses) | US$10/month on monthly billing. Includes one reserved TCP address | Fixed assigned hostname and port. [Use a CNAME and the assigned port](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints), or a Minecraft Java SRV record to omit the port | Raw TCP forwarding. A custom-domain ping was not tested | Unavailable |
+| [Playit Free](https://playit.gg/) | Free | Keeps the assigned hostname and port for the lifetime of the tunnel. A Minecraft Java SRV record can send some clients to it using a custom name | The assigned name responded during testing. The tested custom-domain SRV setup reset the list ping | Standalone UDP tunnels are free |
+| [Playit Premium](https://playit.gg/support/playit-premium/) | From US$3/month | [Register and assign a domain you own](https://playit.gg/support/external-domain-cloudflare/) | A formally registered custom domain was not tested | Includes generic combined TCP+UDP tunnels |
+| Minecraft Proxy v2 (design) | About US$0.07 for four hours in GCE Tokyo | Keeps the custom hostname and updates its Cloudflare A record at startup. Java uses TCP 25565 directly | Planned to support both ping and login through the custom hostname | TCP and UDP on the same relay |
 
-ngrok の一般的な独自ドメイン登録は Pay-as-you-go（月額 US$20〜）です。表にある TCP 用の CNAME は、ngrok が割り当てた TCP アドレスを自分の DNS から参照する方法です。 [ngrok の料金](https://ngrok.com/pricing) · [TCP での独自ドメインの扱い](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints)
+ngrok's general custom-domain registration is a Pay-as-you-go feature (from US$20/month). Its [TCP alias](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints) instead points your DNS at an assigned TCP address. [ngrok pricing](https://ngrok.com/pricing)
 
-Playit 無料版の結果は、一時サーバーを使った Minecraft Java 1.21.11 の検証に基づきます。独自ドメインではログイン開始まで応答し、同じ名前での一覧ピングは切断されました。検証範囲は、このトンネル構成です。
+The Playit observations come from one free tunnel tested with a temporary Minecraft Java 1.21.11 server. The custom-domain SRV path reached the start of login and reset the server-list ping. The assigned Playit address passed both checks.
 
-v2 の試算は東京の `e2-micro`、標準ブートディスク 10 GiB、一時 IPv4 を4時間使った場合です。税・転送量・ドメイン代は別です。VM とディスクを削除し、固定 IP を確保しない構成では、利用しない月の中継リソース費用は発生しません。 [GCE の料金](https://cloud.google.com/products/compute/pricing/general-purpose) · [公開 IPv4 の料金](https://cloud.google.com/vpc/network-pricing#ipaddress)
+The v2 estimate uses an `e2-micro` in Tokyo, a 10 GiB standard boot disk, and an ephemeral public IPv4 address. Transfer, taxes, and domain registration are separate. Deleting the VM and its boot disk and using an ephemeral IP avoids idle relay charges. [GCE compute and disk pricing](https://cloud.google.com/products/compute/pricing/general-purpose) · [Public IPv4 pricing](https://cloud.google.com/vpc/network-pricing#ipaddress)
 
-## 設計
+## Design
 
-[要件・設計](docs/design.md)
+[Requirements and design](docs/design.md)

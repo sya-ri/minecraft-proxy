@@ -1,56 +1,56 @@
-# Minecraft Proxy v2 の設計
+# Minecraft Proxy v2 design
 
-## 要件
+## Requirements
 
-| 利用者 | できること |
+| Audience | Outcome |
 | --- | --- |
-| サーバー運営者 | Windows・macOS・Linux のアプリから中継を起動・停止し、接続先・中継状態・稼働期限を確認する |
-| Minecraft Java プレイヤー | 運営者の独自ドメインを入力して一覧ピングとログインができる |
-| UDP を使うサービスの利用者 | 同じドメインと指定された UDP ポートで接続する |
-| サーバー運営者 | PC が落ちても、指定した期限で VM とブートディスクが自動削除される |
+| Server operator | Start and stop a relay on Windows, macOS, or Linux. See its state, public address, and expiry. |
+| Minecraft Java player | Enter the operator's custom hostname and reach the server for both list ping and login. |
+| UDP client | Reach the configured UDP service through the same hostname and its UDP port. |
+| Server operator | The relay VM and boot disk are deleted when the session expires, even if the operator's computer goes offline. |
 
-最初の版は1設定で1台の中継を管理する。Minecraft サーバーとワールドは運営者の PC で開く。
+One configuration manages one relay. The operator runs Minecraft and stores the world on their own computer.
 
-## 構成
+## Architecture
 
 ```mermaid
 flowchart LR
-    Player["Minecraft / UDP クライアント"] -->|"TCP 25565 / 設定した UDP ポート"| VM["東京の一時 GCE VM · frps"]
-    Local["運営者の PC · Go アプリと frpc"] -->|"TLS"| VM
-    Local -->|"作成・状態確認・削除"| GCE["Compute Engine API"]
-    Local -->|"DNS の A レコードを更新"| DNS["Cloudflare DNS API"]
-    Local <-->|"ローカルの TCP / UDP"| Server["Minecraft / UDP サービス"]
+    Player["Minecraft / UDP client"] -->|"TCP 25565 / configured UDP port"| VM["Temporary GCE VM in Tokyo · frps"]
+    VM <-->|"TLS control and work connections"| Local["Operator's computer · Go app and frpc"]
+    Local -->|"Create, inspect, delete"| GCE["Compute Engine API"]
+    Local -->|"Update the A record"| DNS["Cloudflare DNS API"]
+    Local <-->|"Local TCP / UDP"| Server["Minecraft / UDP service"]
 ```
 
-GUI は Wails v3 と React / TypeScript で作り、OAuth・GCE・DNS・`frpc` のプロセス管理は Go 側に置く。ランタイムの GUI サポートは各 OS で確認する。Linux の初期基準は GTK4 / WebKitGTK 6.0 を提供する環境とする。
+Use Wails v3 and React / TypeScript for the desktop UI. Go manages OAuth, GCE, Cloudflare DNS, and the `frpc` process. Verify each supported OS. The initial Linux baseline is an environment with GTK4 and WebKitGTK 6.0.
 
-`frpc` は OS・CPU に対応する公式バイナリを同梱する。VM は同じ版の `frps` を起動時に取得し、固定したチェックサムを検証する。配布物には frp のライセンスを添える。制御接続にはセッションごとの frp トークンと、サーバー証明書を検証する TLS を使う。
+Bundle the official `frpc` executable for the target OS and CPU. At startup, the VM fetches `frps` at the same pinned version and verifies its checksum. Include the frp license in distributions. Authenticate the frp control connection with a session-specific token and verify the server certificate over TLS.
 
-## 初回設定と画面
+## Setup and UI
 
-運営者は GCE のプロジェクト、東京のゾーン、VPC、Cloudflare ゾーン、接続先のドメイン、ローカルポート、稼働時間を設定する。通信を許可する GCE の対象タグとファイアウォールルールはセットアップ時に用意する。UDP を使う場合は公開ポートも許可する。
+The operator configures the GCE project, Tokyo zone, VPC, Cloudflare zone, public hostname, local ports, and session duration. Provision the VPC firewall rule and target tag during setup. Include the public UDP port when the relay will forward UDP.
 
-Google と Cloudflare の同意は、アプリから開く既定のブラウザーで行う。デスクトップ OAuth クライアントと Authorization Code + PKCE を用い、トークンは OS の資格情報ストアに保存する。Google は Compute Engine の操作スコープ、Cloudflare はゾーンを探す読み取り権限と DNS 更新権限を要求する。対象 GCP プロジェクトの IAM、Compute Engine API、課金の有効化は各利用者が管理する。外部配布時の OAuth クライアントは各サービスの公開条件を適用する。
+Google and Cloudflare authorization opens in the system browser. Use desktop OAuth clients with the Authorization Code flow and PKCE. Store tokens in the operating system's credential store. Request the Compute Engine scope from Google and the zone lookup and DNS write scopes from Cloudflare. Operators manage IAM, API enablement, and billing on their GCE projects. Apply each provider's OAuth publication requirements before distributing the app externally.
 
-画面は起動・停止、接続状態、接続先、稼働期限を配置で伝える。サブタイトルや画面の読み方を説明する文章は置かない。アイコンが必要なら Tabler Icons を使う。操作ラベル、入力ラベル、エラーからの復帰に必要な文、アイコン操作のアクセシブルネームは残す。
+Use layout and icons to communicate state and show the address, expiry, and start/stop controls. Skip subtitles and explanatory copy. Use Tabler Icons where an icon helps. Include usable action labels, input labels, accessible names, and actionable errors.
 
-## 起動と停止
+## Relay lifecycle
 
-1. 起動前にローカルの Minecraft サーバーを確認する。対象ドメインから決定的な VM 名を生成し、設定したプロジェクト・ゾーンでその名前を照会する。
-2. 同名 VM が見つかったら、管理アプリ・接続先・ローカルに保存した起動セッションの識別子を照合する。一致する場合は状態を復元し、不一致なら操作を止める。新規作成には一時公開 IPv4、VM の自動削除期限、ブートディスクの連動削除を設定する。作成の再試行では同じ `requestId` を使い、名前の競合は既存 VM の再照会で解決する。
-3. 新しい VM で `frps` が立ち上がり、`frpc` 経由で Minecraft のステータスが返ったら、公開 IPv4 を DNS-only の A レコードに設定する。既存の CNAME・A・AAAA や Minecraft 用 SRV を切り替える場合は、対象を表示して運営者の選択を受ける。安定運用時の TTL は60秒を目安にする。
-4. 停止時は、このアプリが当該セッションで作った DNS レコードを取り除き、VM を削除する。DNS の更新が失敗しても VM の削除を試みる。アプリが強制終了した場合、GCE は期限で VM を削除する。残った DNS は次の起動・停止操作で照合する。
+1. Confirm that the local Minecraft server responds. Derive a deterministic VM name from the public hostname and look it up in the configured GCE project and zone.
+2. Check any matching VM against the app, relay, and locally stored session labels. Recover matching sessions and report a conflict if ownership differs. For a new VM, configure ephemeral IPv4, automatic deletion, and boot disk auto-deletion. Reuse the same `requestId` when retrying creation and reconcile name conflicts by looking up the VM again.
+3. After `frps` and `frpc` can pass a Minecraft status request, publish the ephemeral address in a DNS-only A record. Ask the operator before replacing an existing CNAME, A, AAAA, or Minecraft SRV record. Use a 60-second TTL for steady operation.
+4. On stop, remove this session's managed DNS record and delete the VM. Attempt VM deletion even if DNS cleanup fails. On forced app exit, GCE deletes the VM at expiry. A later start or stop reconciles a stale DNS record.
 
-## 受け入れ確認
+## Acceptance checks
 
-- Windows・macOS・Linux それぞれでアプリが起動し、該当する `frpc` を使える。
-- GUI の未起動、起動中、接続中、エラーの表示を、実クラウドに接続しないスナップショットで確認できる。
-- 起動の重複、応答消失後の再試行、運営者が管理していない同名 VM を確認する。
-- 外部から独自ドメインで Minecraft Java の一覧ピングとログイン、設定した UDP ポートの往復を確認する。
-- 正常停止と強制終了後の期限到達で VM・ブートディスクが削除され、DNS の状態を復元できる。
+- Start the app and verify the bundled `frpc` on Windows, macOS, and Linux.
+- Cover stopped, starting, online, and error states with UI snapshots that use simulated services.
+- Exercise overlapping start requests, retries after a lost response, and an unrelated VM with the same name.
+- Verify a Minecraft Java list ping, login, and UDP round trip from outside the operator's network.
+- Verify boot disk and VM deletion after a normal stop and after session expiry. Check DNS reconciliation after a forced app exit.
 
-## 公式仕様
+## Primary references
 
-- [GCE の VM 作成 API](https://docs.cloud.google.com/compute/docs/reference/rest/v1/instances/insert) · [VM 名の一意性](https://docs.cloud.google.com/compute/docs/naming-resources) · [VM の稼働時間制限](https://docs.cloud.google.com/compute/docs/instances/limit-vm-runtime)
-- [Cloudflare の OAuth](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/) · [Cloudflare の DNS 更新 API](https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/edit/)
-- [デスクトップ向け Google OAuth](https://developers.google.com/identity/protocols/oauth2/native-app) · [frp の TCP / UDP](https://gofrp.org/en/docs/features/tcp-udp/) · [Wails の対応環境](https://wails.io/faq/)
+- [GCE instance creation](https://docs.cloud.google.com/compute/docs/reference/rest/v1/instances/insert) · [VM name uniqueness](https://docs.cloud.google.com/compute/docs/naming-resources) · [GCE VM runtime limits](https://docs.cloud.google.com/compute/docs/instances/limit-vm-runtime)
+- [Cloudflare OAuth clients](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/) · [Cloudflare DNS updates](https://developers.cloudflare.com/api/resources/dns/subresources/records/methods/edit/)
+- [Google OAuth for desktop apps](https://developers.google.com/identity/protocols/oauth2/native-app) · [frp TCP and UDP](https://gofrp.org/en/docs/features/tcp-udp/) · [Wails platform support](https://wails.io/faq/)
