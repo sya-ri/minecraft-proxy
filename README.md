@@ -24,7 +24,7 @@ The Playit Free observations are from one tunnel with a Minecraft Java 1.21.11 s
 
 ![Relay costs reach Playit Premium's US$3/month starting price at about 182 hours in Tokyo and 215 hours in Iowa.](docs/monthly-relay-cost.svg)
 
-At Playit Premium's US$3/month starting price, break-even is **182 hours in Tokyo** and **215 hours in Iowa**. Tokyo is the app's relay region. Iowa is the default region in Google Cloud's pricing table. [Playit pricing](https://playit.gg/)
+At Playit Premium's US$3/month starting price, break-even is **182 hours in Tokyo** (`asia-northeast1`) and **215 hours in Iowa** (`us-central1`). Tokyo is the app's relay region. Iowa is the default region in Google Cloud's pricing table. [Playit pricing](https://playit.gg/)
 
 Both estimates use an `e2-micro` (two shared vCPUs and 1 GiB RAM), a 10 GiB standard boot disk, and an ephemeral public IPv4 address. Add up the uptime of all relays. The estimates use on-demand list rates, assume the VM and disk are deleted between sessions, and exclude free-tier credits, network transfer, taxes, and domain registration. [GCE compute pricing](https://cloud.google.com/products/compute/pricing/general-purpose) · [Disk pricing](https://cloud.google.com/compute/disks-image-pricing) · [IPv4 and transfer pricing](https://cloud.google.com/vpc/network-pricing#ipaddress)
 
