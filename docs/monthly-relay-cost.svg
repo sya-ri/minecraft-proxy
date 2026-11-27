@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="286" viewBox="0 0 760 286" role="img" aria-labelledby="title desc">
   <title id="title">Monthly relay cost by hours online</title>
-  <desc id="desc">At on-demand rates the Tokyo relay costs about 1.65 US cents per hour, and the Iowa relay costs about 1.39 cents per hour. The two estimates reach Playit Premium's starting price of 3 US dollars per month at about 182 and 215 hours, respectively.</desc>
+  <desc id="desc">At on-demand rates the Tokyo relay (asia-northeast1) costs about 1.65 US cents per hour, and the Iowa relay (us-central1) costs about 1.39 cents per hour. The two estimates reach Playit Premium's starting price of 3 US dollars per month at about 182 and 215 hours, respectively.</desc>
   <rect x="0.5" y="0.5" width="759" height="285" rx="12" fill="#fff" stroke="#d0d7de"/>
   <g font-family="system-ui, sans-serif" fill="#24292f">
     <path d="M58 26H610 M58 70H610 M58 114H610 M58 158H610 M58 202H610 M58 246H610" stroke="#d8dee4" fill="none"/>
@@ -26,8 +26,8 @@
     <circle cx="393.40" cy="114" r="5" fill="#fff" stroke="#0969da" stroke-width="2"/>
     <circle cx="454.43" cy="114" r="5" fill="#fff" stroke="#087763" stroke-width="2"/>
     <g font-size="16" font-weight="600">
-      <text x="622" y="33.75" fill="#0550ae">Tokyo</text>
-      <text x="622" y="67.20" fill="#076755">Iowa</text>
+      <text x="622" y="33.75" fill="#0550ae">asia-northeast1</text>
+      <text x="622" y="67.20" fill="#076755">us-central1</text>
       <text x="622" y="119" fill="#8a410a">Playit Premium</text>
       <text x="393.40" y="94" text-anchor="middle" fill="#0550ae">≈182 h</text>
       <text x="463.43" y="148" fill="#076755">≈215 h</text>
