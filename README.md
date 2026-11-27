@@ -1,5 +1,8 @@
 # minecraft-proxy
 
+> [!TIP]
+> Use [Tovela](https://github.com/sya-ri/tovela) for on-demand relays. It starts a temporary cloud VM when you need to share your Minecraft server and deletes it when the session expires to avoid idle VM costs.
+
 Proxy your local Minecraft server with a public server using your domain. It's not a Bungeecord or a plugin.
 
 ## Structure
