@@ -6,21 +6,27 @@ The [v1 branch](https://github.com/sya-ri/minecraft-proxy/tree/v1) contains the 
 
 ## Service comparison
 
-List prices in USD, checked November 27, 2026.
+✓ Supported · △ With limitations · ✗ Unavailable · ? Unverified. List prices in USD, checked November 27, 2026.
 
-| Service | Price | Stable address and custom domain | Minecraft Java server-list ping | UDP |
-| --- | --- | --- | --- | --- |
-| [ngrok Free](https://ngrok.com/pricing) | Free. TCP endpoints require card verification | Random TCP hostname and port. A DNS alias needs updating when the assignment changes | Raw TCP forwarding. A custom-domain ping was not tested | [Unavailable](https://ngrok.com/compare/tailscale) |
-| [ngrok Hobbyist](https://ngrok.com/docs/gateway/domains/tcp-addresses) | US$10/month on monthly billing. Includes one reserved TCP address | Fixed assigned hostname and port. [Use a CNAME and the assigned port](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints), or a Minecraft Java SRV record to omit the port | Raw TCP forwarding. A custom-domain ping was not tested | Unavailable |
-| [Playit Free](https://playit.gg/) | Free | Keeps the assigned hostname and port for the lifetime of the tunnel. A Minecraft Java SRV record can send some clients to it using a custom name | The assigned name responded during testing. The tested custom-domain SRV setup reset the list ping | Standalone UDP tunnels are free |
-| [Playit Premium](https://playit.gg/support/playit-premium/) | From US$3/month | [Register and assign a domain you own](https://playit.gg/support/external-domain-cloudflare/) | A formally registered custom domain was not tested | Includes generic combined TCP+UDP tunnels |
-| Minecraft Proxy (design) | About US$0.07 for four hours in GCE Tokyo | Keeps the custom hostname and updates its Cloudflare A record at startup. Java uses TCP 25565 directly | Planned to support both ping and login through the custom hostname | TCP and UDP on the same relay |
+| Service | Price | Stable public endpoint | Your own hostname | Java list ping on your hostname | UDP |
+| --- | --- | --- | --- | --- | --- |
+| [ngrok Free](https://ngrok.com/pricing) | Free with card verification for TCP | ✗ Random hostname and port | △ A TCP DNS alias needs updating when the endpoint changes | ? | ✗ [TCP only](https://ngrok.com/compare/tailscale) |
+| [ngrok Hobbyist](https://ngrok.com/docs/gateway/domains/tcp-addresses) | US$10/month on monthly billing | ✓ One reserved TCP address | △ [CNAME with assigned port](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints), or Java SRV | ? | ✗ TCP only |
+| [Playit Free](https://playit.gg/) | Free | ✓ Assigned hostname and port for the lifetime of the tunnel | △ Java SRV workaround | △ Worked on the assigned name. Failed with the custom SRV setup tested | ✓ Standalone UDP tunnels |
+| [Playit Premium](https://playit.gg/support/playit-premium/) | From US$3/month | ✓ Assigned hostname and port | ✓ [External domain registration](https://playit.gg/support/external-domain-cloudflare/) | ? | ✓ Generic TCP+UDP tunnels |
+| Minecraft Proxy (planned) | About US$0.0165 per relay hour in Tokyo | ✓ Stable hostname. IP can change between sessions | ✓ Cloudflare DNS, direct TCP 25565 | ✓ Planned through the custom hostname | ✓ TCP and optional UDP on one relay |
 
-ngrok's general custom-domain registration is a Pay-as-you-go feature (from US$20/month). Its [TCP alias](https://ngrok.com/docs/gateway/domains/custom-domains#using-custom-domains-with-tcp-endpoints) instead points your DNS at an assigned TCP address. [ngrok pricing](https://ngrok.com/pricing)
+ngrok's full custom-domain registration starts at US$20/month on Pay-as-you-go. TCP aliases use an assigned TCP address. [ngrok pricing](https://ngrok.com/pricing)
 
-The Playit observations come from one free tunnel tested with a temporary Minecraft Java 1.21.11 server. The custom-domain SRV path reached the start of login and reset the server-list ping. The assigned Playit address passed both checks.
+The Playit Free observations are from one tunnel with a Minecraft Java 1.21.11 server. The assigned name returned a server-list ping. The custom SRV name reached the start of login, but its list ping was reset.
 
-The estimate uses an `e2-micro` in Tokyo, a 10 GiB standard boot disk, and an ephemeral public IPv4 address. Transfer, taxes, and domain registration are separate. Deleting the VM and its boot disk and using an ephemeral IP avoids idle relay charges. [GCE compute and disk pricing](https://cloud.google.com/products/compute/pricing/general-purpose) · [Public IPv4 pricing](https://cloud.google.com/vpc/network-pricing#ipaddress)
+### Monthly relay cost
+
+![Monthly relay cost in USD. Minecraft Proxy rises from zero at about US$0.0165/hour and crosses Playit Premium's US$3/month starting price around 182 hours. Playit Free stays at US$0.](docs/monthly-relay-cost.svg)
+
+At Playit Premium's US$3 starting price, **Minecraft Proxy is cheaper below about 182 relay hours per month** and **Playit Premium is cheaper above that**. That's roughly six hours of relay uptime a day in a 30-day month. If Playit Free covers the features you need, it costs US$0 at any usage level. [Playit pricing](https://playit.gg/)
+
+The Tokyo estimate uses one `e2-micro` (about US$0.01075/hour), a 10 GiB standard boot disk (about US$0.00071/hour), and an ephemeral public IPv4 address (US$0.005/hour). Hours count whenever the relay runs, including when nobody is connected. The estimate assumes the VM and disk are deleted between sessions and excludes network transfer, taxes, and domain registration. GCE transfer charges can move the break-even point earlier. [GCE compute pricing](https://cloud.google.com/products/compute/pricing/general-purpose) · [Disk pricing](https://cloud.google.com/compute/disks-image-pricing) · [IPv4 and transfer pricing](https://cloud.google.com/vpc/network-pricing#ipaddress)
 
 ## Design
 

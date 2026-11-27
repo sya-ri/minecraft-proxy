@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="374" viewBox="0 0 800 374" role="img" aria-labelledby="title desc">
+  <title id="title">Monthly relay cost by hours online</title>
+  <desc id="desc">Minecraft Proxy in Tokyo costs about 1.65 cents per hour. Playit Premium starts at 3 dollars per month and is cheaper above about 182 hours per month at that price. Playit Free costs zero within its feature limits.</desc>
+  <rect x="0.5" y="0.5" width="799" height="373" rx="12" fill="#fff" stroke="#d0d7de"/>
+  <g font-family="system-ui, sans-serif" fill="#24292f">
+    <text x="36" y="37" font-size="22" font-weight="650">Monthly relay cost</text>
+    <text x="36" y="63" font-size="14" fill="#57606a">USD per month</text>
+    <path d="M80 70H722 M80 118H722 M80 166H722 M80 214H722 M80 262H722 M80 310H722" stroke="#d8dee4" fill="none"/>
+    <g text-anchor="end" font-size="14" fill="#57606a">
+      <text x="68" y="75">$5</text>
+      <text x="68" y="123">$4</text>
+      <text x="68" y="171">$3</text>
+      <text x="68" y="219">$2</text>
+      <text x="68" y="267">$1</text>
+      <text x="68" y="315">$0</text>
+    </g>
+    <g text-anchor="middle" font-size="14" fill="#57606a">
+      <text x="80.0" y="336">0</text>
+      <text x="208.4" y="336">60</text>
+      <text x="336.8" y="336">120</text>
+      <text x="465.2" y="336">180</text>
+      <text x="593.6" y="336">240</text>
+      <text x="722.0" y="336">300</text>
+      <text x="401" y="358" font-size="15">Relay hours per month</text>
+    </g>
+    <path d="M80 70V310" stroke="#afb8c1"/>
+    <path d="M80 310H722" stroke="#57606a" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round"/>
+    <path d="M80 166H722" stroke="#9a4b0d" stroke-width="2.5" stroke-dasharray="9 5"/>
+    <path d="M470.08 166V310" stroke="#8c959f" stroke-dasharray="4 4"/>
+    <path d="M80 310L722 73.00" stroke="#0969da" stroke-width="3" fill="none"/>
+    <circle cx="470.08" cy="166" r="5.5" fill="#fff" stroke="#24292f" stroke-width="2"/>
+    <g font-size="15" font-weight="600">
+      <text x="435" y="91" fill="#0550ae">Minecraft Proxy (Tokyo)</text>
+      <text x="713" y="190" text-anchor="end" fill="#8a410a">Playit Premium · from $3</text>
+      <text x="713" y="298" text-anchor="end" fill="#424a53">Playit Free · $0</text>
+      <text x="458.08" y="148" text-anchor="end">≈182 h break-even</text>
+    </g>
+  </g>
+</svg>
