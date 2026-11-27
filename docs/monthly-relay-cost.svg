@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="720" height="286" viewBox="0 0 720 286" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="286" viewBox="0 0 760 286" role="img" aria-labelledby="title desc">
   <title id="title">Monthly relay cost by hours online</title>
-  <desc id="desc">The Tokyo relay starts at zero and costs about 1.65 cents per hour. At about 182 relay hours per month it reaches Playit Premium's starting price of 3 US dollars per month.</desc>
-  <rect x="0.5" y="0.5" width="719" height="285" rx="12" fill="#fff" stroke="#d0d7de"/>
+  <desc id="desc">At on-demand rates the Tokyo relay costs about 1.65 US cents per hour, and the Iowa relay costs about 1.39 cents per hour. The two estimates reach Playit Premium's starting price of 3 US dollars per month at about 182 and 215 hours, respectively.</desc>
+  <rect x="0.5" y="0.5" width="759" height="285" rx="12" fill="#fff" stroke="#d0d7de"/>
   <g font-family="system-ui, sans-serif" fill="#24292f">
-    <path d="M58 26H679 M58 70H679 M58 114H679 M58 158H679 M58 202H679 M58 246H679" stroke="#d8dee4" fill="none"/>
-    <path d="M58 26V246H679" stroke="#afb8c1" fill="none"/>
+    <path d="M58 26H610 M58 70H610 M58 114H610 M58 158H610 M58 202H610 M58 246H610" stroke="#d8dee4" fill="none"/>
+    <path d="M58 26V246H610" stroke="#afb8c1" fill="none"/>
     <g text-anchor="end" font-size="15" fill="#57606a">
       <text x="46" y="31">$5</text>
       <text x="46" y="75">$4</text>
@@ -15,18 +15,22 @@
     </g>
     <g text-anchor="middle" font-size="15" fill="#57606a">
       <text x="58" y="270">0 h</text>
-      <text x="265" y="270">100 h</text>
-      <text x="471.99999999999994" y="270">200 h</text>
-      <text x="679" y="270">300 h</text>
+      <text x="242" y="270">100 h</text>
+      <text x="426" y="270">200 h</text>
+      <text x="610" y="270">300 h</text>
     </g>
-    <path d="M58 114H679" stroke="#9a4b0d" stroke-width="2.5" stroke-dasharray="9 5"/>
-    <path d="M435.32 114V246" stroke="#8c959f" stroke-dasharray="4 4"/>
-    <path d="M58 246L679 28.75" stroke="#0969da" stroke-width="3" fill="none"/>
-    <circle cx="435.32" cy="114" r="5.5" fill="#fff" stroke="#24292f" stroke-width="2"/>
+    <path d="M58 114H610" stroke="#9a4b0d" stroke-width="2.5" stroke-dasharray="9 5"/>
+    <path d="M393.40 114V246 M454.43 114V246" stroke="#8c959f" stroke-dasharray="4 4"/>
+    <path d="M58 246L610 28.75" stroke="#0969da" stroke-width="3" fill="none"/>
+    <path d="M58 246L610 62.20" stroke="#087763" stroke-width="3" fill="none"/>
+    <circle cx="393.40" cy="114" r="5" fill="#fff" stroke="#0969da" stroke-width="2"/>
+    <circle cx="454.43" cy="114" r="5" fill="#fff" stroke="#087763" stroke-width="2"/>
     <g font-size="16" font-weight="600">
-      <text x="365" y="48" fill="#0550ae">Minecraft Proxy (Tokyo)</text>
-      <text x="669" y="139" text-anchor="end" fill="#8a410a">Playit Premium</text>
-      <text x="435.32" y="97" text-anchor="middle">≈182 h</text>
+      <text x="622" y="33.75" fill="#0550ae">Tokyo</text>
+      <text x="622" y="67.20" fill="#076755">Iowa</text>
+      <text x="622" y="119" fill="#8a410a">Playit Premium</text>
+      <text x="393.40" y="94" text-anchor="middle" fill="#0550ae">≈182 h</text>
+      <text x="463.43" y="148" fill="#076755">≈215 h</text>
     </g>
   </g>
 </svg>
