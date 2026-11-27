@@ -22,9 +22,9 @@ The Playit Free observations are from one tunnel with a Minecraft Java 1.21.11 s
 
 ### Monthly relay cost
 
-![Monthly relay cost in USD. Minecraft Proxy rises from zero at about US$0.0165/hour and crosses Playit Premium's US$3/month starting price around 182 hours. Playit Free stays at US$0.](docs/monthly-relay-cost.svg)
+![Monthly relay cost in USD. Minecraft Proxy rises from zero at about US$0.0165/hour and crosses Playit Premium's US$3/month starting price around 182 hours.](docs/monthly-relay-cost.svg)
 
-At Playit Premium's US$3 starting price, **Minecraft Proxy is cheaper below about 182 relay hours per month** and **Playit Premium is cheaper above that**. That's roughly six hours of relay uptime a day in a 30-day month. If Playit Free covers the features you need, it costs US$0 at any usage level. [Playit pricing](https://playit.gg/)
+**Break-even is about 182 relay hours per month** at Playit Premium's starting price of US$3/month. [Playit pricing](https://playit.gg/)
 
 The Tokyo estimate uses one `e2-micro` (about US$0.01075/hour), a 10 GiB standard boot disk (about US$0.00071/hour), and an ephemeral public IPv4 address (US$0.005/hour). Count every hour each relay runs, including when nobody is connected. Two relays running for one hour count as two relay hours. The estimate assumes the VM and disk are deleted between sessions and excludes network transfer, taxes, and domain registration. GCE transfer charges can move the break-even point earlier. [GCE compute pricing](https://cloud.google.com/products/compute/pricing/general-purpose) · [Disk pricing](https://cloud.google.com/compute/disks-image-pricing) · [IPv4 and transfer pricing](https://cloud.google.com/vpc/network-pricing#ipaddress)
 
