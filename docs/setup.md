@@ -5,7 +5,7 @@
 1. Enable the Compute Engine API and billing for your Google Cloud project. The signed-in user needs permission to create and delete instances and their boot disks, attach an external IPv4 address, and update VM scheduling. On a standard project with its own VPC, start with the [Compute Instance Admin role](https://docs.cloud.google.com/compute/docs/access/iam#compute.instanceAdmin.v1).
 2. In the VPC used by the app, allow inbound TCP 7000 and 25565 on instances tagged `minecraft-proxy`. Add each public UDP port you plan to use. Restrict TCP 7000 to your app's outbound address when it is stable. [VPC firewall rules](https://docs.cloud.google.com/firewall/docs/using-firewalls)
 3. Create a Google OAuth client of type **Desktop app**. If the consent screen is in testing, add the operator as a test user. [Google desktop OAuth](https://developers.google.com/identity/protocols/oauth2/native-app)
-4. Create a Cloudflare OAuth client using authorization code, token authentication **None**, and the redirect `http://127.0.0.1:42813/callback`. Allow Zone Read and DNS Write. A private client is enough for members of its Cloudflare account. [Cloudflare OAuth clients](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/)
+4. Create a Cloudflare OAuth client with the authorization code and refresh token grants, token authentication **None**, and the redirect `http://127.0.0.1:42813/callback`. Allow Zone Read and DNS Write. A private client is enough for members of its Cloudflare account. [Cloudflare OAuth clients](https://developers.cloudflare.com/fundamentals/oauth/create-an-oauth-client/)
 
 ## Relays
 
